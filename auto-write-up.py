@@ -9,7 +9,6 @@ from PIL import ImageTk, Image
 import PyPDF2
 import re
 from mailmerge import MailMerge  # pip install docx-mailmerge2 (new version)
-import shutil
 
 
 def create_name_dict(full_text: str):
@@ -78,17 +77,20 @@ def find_late(work_text: str):
         else:
             break
         if current_text[first_parentheses-2] == 'M':
+            actual_minutes_late = str(int(convert_to_minutes(current_text[first_parentheses-18:first_parentheses-13])) -
+                                      int(convert_to_minutes(current_text[first_parentheses-9:first_parentheses-4])))
+            # above line is valid because we always know that if there is an M before a ( that the pattern will hold
             minutes_late = convert_to_minutes(current_text[first_parentheses:second_parentheses])
             third_parentheses = second_parentheses+2
             if current_text[third_parentheses] == '(' and \
                     current_text[first_parentheses:second_parentheses] == \
-                    current_text[third_parentheses+1:third_parentheses+5]:
+                    current_text[third_parentheses+1:third_parentheses+5] and current_text[first_parentheses:second_parentheses] == actual_minutes_late:
                 # this will fail if there is a double-digit time, but that would only happen if someone
                 # was scheduled 20 hours or more, so I think it is safe to assume that will not happen
                 # We know that the data will be written as two of the same numbers (shift time divided by two) right
                 # next to each other. If they are the same we know someone missed a shift.
                 late_list.append(['did not attend their shift', find_closest_date(current_text[:second_parentheses])])
-            elif int(minutes_late) > root.time:
+            elif int(minutes_late) > int(root.time):
                 late_list.append(['was ' + minutes_late + ' minutes late to their shift',
                                   find_closest_date(current_text[:second_parentheses])])
         second_parentheses += 1  # so we do not include next one
