@@ -236,19 +236,19 @@ background_label.place(x=0, y=0, relwidth=1, relheight=1)
 IM_trace = StringVar()
 IM_trace.trace("w", lambda name, index, mode, IM_trace=IM_trace: write_IM(IM_trace))
 IM_name = Entry(root, width=int(app_width/20), textvariable=IM_trace)
-IM_name.insert(0, "Interim Manager Name")
+IM_name.insert(0, "Enter Interim Manager Name...")
 IM_name.place(relx=.25, rely=.1, anchor=CENTER)
 
 location_trace = StringVar()
 location_trace.trace("w", lambda name, index, mode, location_trace=location_trace: write_location(location_trace))
 location = Entry(root, width=int(app_width/20), textvariable=location_trace)
-location.insert(0, "Location Name")
+location.insert(0, "Enter Location Name...")
 location.place(relx=.75, rely=.1, anchor=CENTER)
 
 time_late_trace = StringVar()
 time_late_trace.trace("w", lambda name, index, mode, time_late_trace=time_late_trace: write_time(time_late_trace))
 time_to_be_late = Entry(root, width=int(app_width/20), textvariable=time_late_trace)
-time_to_be_late.insert(0, "Minutes to be late? Enter just number, default is 5")
+time_to_be_late.insert(0, "Enter time to be late in minutes (only a number)...")
 time_to_be_late.place(relx=.5, rely=.2, anchor=CENTER)
 
 c1 = Checkbutton(root, text='Write Up in Spanish', variable=root.spanish, onvalue=1, offvalue=0, command=change_to_spanish).place(relx=.5, rely=.8, anchor=CENTER)
@@ -258,7 +258,8 @@ write_up_button = Button(root, text="Generate Write Ups", command=create_writeup
 button_exit = Button(root, text="Exit Program", command=root.quit, fg='red').place(relx=.5, rely=.9, anchor=CENTER)
 root.mainloop()
 
-# pyinstaller --add-data='files/chick.png:files'  --add-data='files/template_spanish.docx:files' --add-data='files/chick3.png:files' --add-data='files/template.docx:files' --onefile auto-write-up.py --windowed --icon=files/chick3.png
+# pyinstaller --add-data='files/chick.png:files' --add-data='files/template_spanish.docx:files' --add-data='files/chick3.png:files' --add-data='files/template.docx:files' --onefile auto-write-up.py --windowed --icon=files/chick3.icns
 #  That is the command line in terminal to convert this to an exe
+
 
 
