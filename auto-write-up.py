@@ -65,6 +65,13 @@ def get_full_text(pages: list):
 
 
 def find_late(work_text: str):
+    late_text = " minutes late to their shift"
+    was_text = "was "
+    no_show_text = "did not attend their shift"
+    if root.spanish.get() == 1:
+        late_text = " minutos tarde a su turno"
+        no_show_text = "no asistió a su turno"
+        was_text = "estuvo "
     late_list = []
     current_text = work_text
     second_parentheses = 0  # start as 0 to make first while loop work
@@ -77,21 +84,25 @@ def find_late(work_text: str):
         else:
             break
         if current_text[first_parentheses-2] == 'M':
-            actual_minutes_late = str(int(convert_to_minutes(current_text[first_parentheses-18:first_parentheses-13])) -
-                                      int(convert_to_minutes(current_text[first_parentheses-9:first_parentheses-4])))
+            actual_minutes_late = str(convert_shift_to_minutes(current_text[first_parentheses-18:first_parentheses-11],
+                                                           current_text[first_parentheses-9:first_parentheses-2]))
+            print("Actual minutes late: " + actual_minutes_late)
             # above line is valid because we always know that if there is an M before a ( that the pattern will hold
             minutes_late = convert_to_minutes(current_text[first_parentheses:second_parentheses])
             third_parentheses = second_parentheses+2
+            print(current_text[first_parentheses:second_parentheses])
+            print(current_text[third_parentheses+1:third_parentheses+5])
+            print(actual_minutes_late)
             if current_text[third_parentheses] == '(' and \
                     current_text[first_parentheses:second_parentheses] == \
-                    current_text[third_parentheses+1:third_parentheses+5] and current_text[first_parentheses:second_parentheses] == actual_minutes_late:
+                    current_text[third_parentheses+1:third_parentheses+5] and convert_to_minutes(current_text[first_parentheses:second_parentheses]) == actual_minutes_late:
                 # this will fail if there is a double-digit time, but that would only happen if someone
                 # was scheduled 20 hours or more, so I think it is safe to assume that will not happen
                 # We know that the data will be written as two of the same numbers (shift time divided by two) right
                 # next to each other. If they are the same we know someone missed a shift.
-                late_list.append(['did not attend their shift', find_closest_date(current_text[:second_parentheses])])
+                late_list.append([no_show_text, find_closest_date(current_text[:second_parentheses])])
             elif int(minutes_late) > int(root.time):
-                late_list.append(['was ' + minutes_late + ' minutes late to their shift',
+                late_list.append([was_text + minutes_late + late_text,
                                   find_closest_date(current_text[:second_parentheses])])
         second_parentheses += 1  # so we do not include next one
     return late_list
@@ -110,18 +121,34 @@ def clean_text(full_text: str):
     return full_text
 
 
-def convert_to_minutes(number_string: str):
+def convert_to_minutes(number_string: str, pm_hours=0):
     number_string = number_string.split(':')
+    print(number_string)
     num_minutes = 0
-    num_minutes += 60 * int(number_string[0])
+    num_minutes += 60 * (int(number_string[0]) + pm_hours)
     num_minutes += int(number_string[1])
+    print(num_minutes)
     return str(num_minutes)
+
+
+def convert_shift_to_minutes(part_one_shift: str, part_two_shift: str):
+    print("part one: " + part_one_shift)
+    print("part two: " + part_two_shift)
+    if part_one_shift[-1] == "A":
+        part_one_shift = convert_to_minutes(part_one_shift[:-2])
+    else:
+        part_one_shift = convert_to_minutes(part_one_shift[:-2], 12)
+    if part_two_shift[-1] == "A":
+        part_two_shift = convert_to_minutes(part_two_shift[:-2])
+    else:
+        part_two_shift = convert_to_minutes(part_two_shift[:-2], 12)
+
+    return int(abs(int(part_one_shift) - int(part_two_shift))/2)  # we divide by two because the shift missed is split into 2
+    # half is in clock in, half is in clock out
 
 
 def convert_first_name_last_name(last_name_first_name: str):
     substring = last_name_first_name.split(",")
-    print(substring[0])
-    print(substring[1])
     first_name_last_name = substring[1].strip() + " " + substring[0]
     return first_name_last_name
 
@@ -139,14 +166,14 @@ def create_writeups():
         pdfFileObj = open(root.file, 'rb')
         pdfReader = PyPDF2.PdfReader(pdfFileObj)
         page_list = pdfReader.pages
-        template = resource_path("files/template.docx")
         name_dict = create_name_dict(get_full_text(page_list))
         if name_dict == {}:
             messagebox.showerror("Error", "Please select a valid pdf file")
         else:
             for name in name_dict.keys():
                 for write_up in name_dict[name]:
-                    writeup_document = MailMerge(template)
+                    print(root.template)
+                    writeup_document = MailMerge(root.template)
                     writeup_document.merge(
                         Name=name,
                         Location=root.location,
@@ -189,7 +216,17 @@ def write_location(entry):
 def write_time(entry):
     root.time = time_to_be_late.get()
 
+
+def change_to_spanish():
+    if root.spanish.get() == 1:
+        root.template = resource_path("files/template_spanish.docx")
+    else:
+        root.template = resource_path("files/template.docx")
+
+
 root = Tk()
+root.spanish = tkinter.IntVar()
+root.template = resource_path("files/template.docx")
 root.time = 5  # default time is 5 minutes
 root.title("Chick-fil-A Roster Report")
 root.iconbitmap(resource_path('files/chick.ico'))
@@ -222,9 +259,11 @@ time_to_be_late.insert(0, "Minutes to be late? Enter just number, default is 5")
 time_to_be_late.place(relx=.5, rely=.2, anchor=CENTER)
 time_to_be_late.bind("<Return>", write_time)
 
+c1 = Checkbutton(root, text='Write Up in Spanish', variable=root.spanish, onvalue=1, offvalue=0, command=change_to_spanish).place(relx=.5, rely=.8, anchor=CENTER)
+
 pdf_button = Button(root, text="Select PDF File", command=open_file, fg='blue').place(relx=.25, rely=.6, anchor=CENTER)
 write_up_button = Button(root, text="Generate Write Ups", command=create_writeups).place(relx=.75, rely=.6, anchor=CENTER)
-button_exit = Button(root, text="Exit Program", command=root.quit, fg='red').place(relx=.5, rely=.8, anchor=CENTER)
+button_exit = Button(root, text="Exit Program", command=root.quit, fg='red').place(relx=.5, rely=.9, anchor=CENTER)
 root.mainloop()
 
 # pyinstaller --add-data='files/chick.png:files' --add-data='files/chick3.png:files' --add-data='files/template.docx:files' --onefile auto-write-up.py --windowed --icon=files/chick3.png
