@@ -21,10 +21,9 @@ def create_name_dict(full_text: str):
             break
         name_list.append(current)
         remaining_text = remaining_text[current[2]:]  # current[2] represents the start of the next employee
-        # print("Remaining Text: " + remaining_text)
     for name in name_list:
         for late in find_late(name[1]):
-            if name[0] in name_dict.keys():
+            if convert_first_name_last_name(name[0]) in name_dict.keys():
                 name_dict[convert_first_name_last_name(name[0])].append(late)
             else:
                 name_dict[convert_first_name_last_name(name[0])] = [late]
@@ -49,7 +48,6 @@ def separate_by_name(remaining_text: str):
     next_employee_start += end_name  # makes the index relative to full_text instead of employee_data
 
     name = remaining_text[start_name:end_name]
-    # print("Start Name: " + str(start_name) + " End Name: " + str(end_name))
     return [name.strip(), employee_data.strip(), next_employee_start]
 
 
@@ -164,7 +162,6 @@ def create_writeups():
         else:
             for name in name_dict.keys():
                 for write_up in name_dict[name]:
-                    print(root.template)
                     writeup_document = MailMerge(root.template)
                     writeup_document.merge(
                         Name=name,
@@ -236,20 +233,23 @@ background_image = ImageTk.PhotoImage(resized_image)
 background_label = Label(root, image=background_image)
 background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-IM_name = Entry(root, width=int(app_width/20))
+IM_trace = StringVar()
+IM_trace.trace("w", lambda name, index, mode, IM_trace=IM_trace: write_IM(IM_trace))
+IM_name = Entry(root, width=int(app_width/20), textvariable=IM_trace)
 IM_name.insert(0, "Interim Manager Name")
 IM_name.place(relx=.25, rely=.1, anchor=CENTER)
-IM_name.bind("<Return>", write_IM)
 
-location = Entry(root, width=int(app_width/20))
+location_trace = StringVar()
+location_trace.trace("w", lambda name, index, mode, location_trace=location_trace: write_location(location_trace))
+location = Entry(root, width=int(app_width/20), textvariable=location_trace)
 location.insert(0, "Location Name")
 location.place(relx=.75, rely=.1, anchor=CENTER)
-location.bind("<Return>", write_location)
 
-time_to_be_late = Entry(root, width=int(app_width/20))
+time_late_trace = StringVar()
+time_late_trace.trace("w", lambda name, index, mode, time_late_trace=time_late_trace: write_time(time_late_trace))
+time_to_be_late = Entry(root, width=int(app_width/20), textvariable=time_late_trace)
 time_to_be_late.insert(0, "Minutes to be late? Enter just number, default is 5")
 time_to_be_late.place(relx=.5, rely=.2, anchor=CENTER)
-time_to_be_late.bind("<Return>", write_time)
 
 c1 = Checkbutton(root, text='Write Up in Spanish', variable=root.spanish, onvalue=1, offvalue=0, command=change_to_spanish).place(relx=.5, rely=.8, anchor=CENTER)
 
