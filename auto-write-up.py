@@ -86,13 +86,9 @@ def find_late(work_text: str):
         if current_text[first_parentheses-2] == 'M':
             actual_minutes_late = str(convert_shift_to_minutes(current_text[first_parentheses-18:first_parentheses-11],
                                                            current_text[first_parentheses-9:first_parentheses-2]))
-            print("Actual minutes late: " + actual_minutes_late)
             # above line is valid because we always know that if there is an M before a ( that the pattern will hold
             minutes_late = convert_to_minutes(current_text[first_parentheses:second_parentheses])
             third_parentheses = second_parentheses+2
-            print(current_text[first_parentheses:second_parentheses])
-            print(current_text[third_parentheses+1:third_parentheses+5])
-            print(actual_minutes_late)
             if current_text[third_parentheses] == '(' and \
                     current_text[first_parentheses:second_parentheses] == \
                     current_text[third_parentheses+1:third_parentheses+5] and convert_to_minutes(current_text[first_parentheses:second_parentheses]) == actual_minutes_late:
@@ -123,17 +119,13 @@ def clean_text(full_text: str):
 
 def convert_to_minutes(number_string: str, pm_hours=0):
     number_string = number_string.split(':')
-    print(number_string)
     num_minutes = 0
     num_minutes += 60 * (int(number_string[0]) + pm_hours)
     num_minutes += int(number_string[1])
-    print(num_minutes)
     return str(num_minutes)
 
 
 def convert_shift_to_minutes(part_one_shift: str, part_two_shift: str):
-    print("part one: " + part_one_shift)
-    print("part two: " + part_two_shift)
     if part_one_shift[-1] == "A":
         part_one_shift = convert_to_minutes(part_one_shift[:-2])
     else:
@@ -266,7 +258,7 @@ write_up_button = Button(root, text="Generate Write Ups", command=create_writeup
 button_exit = Button(root, text="Exit Program", command=root.quit, fg='red').place(relx=.5, rely=.9, anchor=CENTER)
 root.mainloop()
 
-# pyinstaller --add-data='files/chick.png:files' --add-data='files/chick3.png:files' --add-data='files/template.docx:files' --onefile auto-write-up.py --windowed --icon=files/chick3.png
+# pyinstaller --add-data='files/chick.png:files'  --add-data='files/template_spanish.docx:files' --add-data='files/chick3.png:files' --add-data='files/template.docx:files' --onefile auto-write-up.py --windowed --icon=files/chick3.png
 #  That is the command line in terminal to convert this to an exe
 
 
