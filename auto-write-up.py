@@ -258,7 +258,7 @@ write_up_button = Button(root, text="Generate Write Ups", command=create_writeup
 button_exit = Button(root, text="Exit Program", command=root.quit, fg='red').place(relx=.5, rely=.9, anchor=CENTER)
 root.mainloop()
 
-# pyinstaller --add-data='files/chick.png:files' --add-data='files/template_spanish.docx:files' --add-data='files/chick3.png:files' --add-data='files/template.docx:files' --onefile auto-write-up.py --windowed --icon=files/chick3.icns
+# pyinstaller --add-data='files/chick.png:files' --add-data='files/template_spanish.docx:files' --add-data='files/chick3.png:files' --add-data='files/template.docx:files' --onefile auto-write-up.py --windowed --icon=files/chick3.png
 #  That is the command line in terminal to convert this to an exe
 
 
