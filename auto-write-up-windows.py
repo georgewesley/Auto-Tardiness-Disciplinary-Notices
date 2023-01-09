@@ -52,7 +52,7 @@ def separate_by_name(remaining_text: str):
 
 
 def find_closest_date(text: str):  # finds closest date to an index going backwards
-    return re.search("[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]", text)[0]
+    return re.findall("[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]", text)[-1]
 
 
 def get_full_text(pages: list):
