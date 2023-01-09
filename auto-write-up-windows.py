@@ -177,18 +177,6 @@ def create_writeups():
         messagebox.showerror("Error", "Please select a valid pdf file")
 
 
-def resource_path(relative_path):
-    # credit to https://stackoverflow.com/questions/51060894/adding-a-data-file-in-pyinstaller-using-the-onefile-option/51061279
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
-
-
 def remove_file_name_from_root_file():
     last_index = str(root.file).rfind('/')
     return root.file[:last_index+1]
@@ -208,25 +196,25 @@ def write_time(entry):
 
 def change_to_spanish():
     if root.spanish.get() == 1:
-        root.template = resource_path("files/template_spanish.docx")
+        root.template = "files/template_spanish.docx"
     else:
-        root.template = resource_path("files/template.docx")
+        root.template = "files/template.docx"
 
 
 root = Tk()
 root.spanish = tkinter.IntVar()
-root.template = resource_path("files/template.docx")
+root.template = "files/template.docx"
 root.time = 5  # default time is 5 minutes
 root.title("Chick-fil-A Roster Report")
-icon = tkinter.Image("photo", file=resource_path("files/chick.png"))
-root.tk.call('wm','iconphoto', root._w, icon)
+# root.iconbitmap(resource_path('files/chick.ico'))
+icon = tkinter.Image("photo", "files/chick.png")
+# root.tk.call('wm','iconphoto', root._w, icon)
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 app_width = screen_width/2
 app_height = screen_height/2
 root.geometry(str(int(app_width)) + 'x' + str(int(app_height)))
-
-img = (Image.open(resource_path("files/chick3.png")))
+img = (Image.open("files/chick3.png"))
 resized_image = img.resize((int(app_width), int(app_height)), Image.ANTIALIAS)
 background_image = ImageTk.PhotoImage(resized_image)
 background_label = Label(root, image=background_image)
