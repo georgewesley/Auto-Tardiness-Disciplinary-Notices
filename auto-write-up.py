@@ -174,6 +174,7 @@ def create_writeups():
 
         pdfFileObj.close()
     except AttributeError:
+        print("test")
         messagebox.showerror("Error", "Please select a valid pdf file")
 
 
@@ -217,7 +218,7 @@ root = Tk()
 root.spanish = tkinter.IntVar()
 root.template = resource_path("files/template.docx")
 root.time = 5  # default time is 5 minutes
-root.title("Chick-fil-A Roster Report")
+root.title("Chick-fil-A Auto Write Up")
 icon = tkinter.Image("photo", file=resource_path("files/chick.png"))
 root.tk.call('wm','iconphoto', root._w, icon)
 screen_width = root.winfo_screenwidth()

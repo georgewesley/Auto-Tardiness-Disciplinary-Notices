@@ -205,7 +205,7 @@ root = Tk()
 root.spanish = tkinter.IntVar()
 root.template = "files/template.docx"
 root.time = 5  # default time is 5 minutes
-root.title("Chick-fil-A Roster Report")
+root.title("Chick-fil-A Auto Write Up")
 # root.iconbitmap(resource_path('files/chick.ico'))
 icon = tkinter.Image("photo", "files/chick.png")
 # root.tk.call('wm','iconphoto', root._w, icon)
@@ -214,6 +214,7 @@ screen_height = root.winfo_screenheight()
 app_width = screen_width/2
 app_height = screen_height/2
 root.geometry(str(int(app_width)) + 'x' + str(int(app_height)))
+
 img = (Image.open("files/chick3.png"))
 resized_image = img.resize((int(app_width), int(app_height)), Image.ANTIALIAS)
 background_image = ImageTk.PhotoImage(resized_image)

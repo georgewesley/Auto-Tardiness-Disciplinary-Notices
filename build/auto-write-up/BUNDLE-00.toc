@@ -1,0 +1,3 @@
+([('auto-write-up',
+   '/Users/weslyon/PycharmProjects/AutoWriteUp 1.0/dist/auto-write-up',
+   'EXECUTABLE')],)
