@@ -228,7 +228,7 @@ app_height = screen_height/2
 root.geometry(str(int(app_width)) + 'x' + str(int(app_height)))
 
 img = (Image.open(resource_path("files/chick3.png")))
-resized_image = img.resize((int(app_width), int(app_height)), Image.ANTIALIAS)
+resized_image = img.resize((int(app_width), int(app_height)), Image.LANCZOS)
 background_image = ImageTk.PhotoImage(resized_image)
 background_label = Label(root, image=background_image)
 background_label.place(x=0, y=0, relwidth=1, relheight=1)
@@ -260,6 +260,3 @@ root.mainloop()
 
 # pyinstaller --add-data='files/chick.png:files' --add-data='files/template_spanish.docx:files' --add-data='files/chick3.png:files' --add-data='files/template.docx:files' --onefile auto-write-up.py --windowed --icon=files/chick3.png
 #  That is the command line in terminal to convert this to an exe
-
-
-
