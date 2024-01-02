@@ -240,7 +240,7 @@ app_height = screen_height/2
 root.geometry(str(int(app_width)) + 'x' + str(int(app_height)))
 
 img = (Image.open("files/chick3.png"))
-resized_image = img.resize((int(app_width), int(app_height)), Image.ANTIALIAS)
+resized_image = img.resize((int(app_width), int(app_height)), Image.LANCZOS)
 background_image = ImageTk.PhotoImage(resized_image)
 background_label = Label(root, image=background_image)
 background_label.place(x=0, y=0, relwidth=1, relheight=1)
