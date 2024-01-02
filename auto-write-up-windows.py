@@ -63,7 +63,6 @@ def get_full_text(pages: list):
 
 
 def find_late(work_text: str):
-    late_text = " minutes late to their shift"
     was_text = "was "
     no_show_text = "did not attend their shift"
     if root.spanish.get() == 1:
@@ -96,7 +95,7 @@ def find_late(work_text: str):
                 # next to each other. If they are the same we know someone missed a shift.
                 late_list.append([no_show_text, find_closest_date(current_text[:second_parentheses])])
             elif int(minutes_late) > int(root.time):
-                late_list.append([was_text + minutes_late + late_text,
+                late_list.append([was_text + convert_minutes_to_hours_and_minutes(int(minutes_late)),
                                   find_closest_date(current_text[:second_parentheses])])
         second_parentheses += 1  # so we do not include next one
     return late_list
@@ -121,6 +120,31 @@ def convert_to_minutes(number_string: str, pm_hours=0):
     num_minutes += 60 * (int(number_string[0]) + pm_hours)
     num_minutes += int(number_string[1])
     return str(num_minutes)
+
+
+def convert_minutes_to_hours_and_minutes(minutes: int) -> str:
+    hours = minutes//60
+    minutes_remaining = minutes - hours*60
+    return get_language_appropriate_late_text(hours, minutes_remaining)
+
+
+def get_language_appropriate_late_text(hours: int, minutes: int) -> str:
+    if minutes > 0 and hours > 0:
+        if root.spanish.get() == 1:
+            text = f"{hours} horas y {minutes} minutos tarde a su turno"
+        else:
+            text = f"{hours} hours and {minutes} minutes late to their shift"
+    elif hours > 0:
+        if root.spanish.get() == 1:
+            text = f"{hours} horas tarde a su turno"
+        else:
+            text = f"{hours} hours late to their shift"
+    else:  # minutes only
+        if root.spanish.get() == 1:
+            text = f"{minutes} minutos tarde a su turno"
+        else:
+            text = f"{minutes} minutes late to their shift"
+    return text
 
 
 def convert_shift_to_minutes(part_one_shift: str, part_two_shift: str):
